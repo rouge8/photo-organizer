@@ -18,12 +18,15 @@ with open('photo_organizer/__init__.py', 'rb') as f:
 
 
 install_requirements = [
-    # TODO: put package requirements here
+    'exifread==2.1.1',
+    'click==3.3',
 ]
 
 
 entry_points = {
-    # TODO: put entry points (e.g. 'console_scripts') here
+    'console_scripts': [
+        'rename-photos = photo_organizer.rename_photos:main',
+    ]
 }
 
 
