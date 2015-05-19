@@ -7,15 +7,18 @@ import click
 import exifread
 
 
-def rename(src, dst):
+def rename(src, dst, dry_run):
     click.echo('%s -> %s' % (src, dst))
-    shutil.move(src, dst)
+    if dry_run is False:
+        shutil.move(src, dst)
 
 
 @click.command()
 @click.option('--input-dir', type=click.Path(file_okay=False, dir_okay=True, exists=True),
               required=True, help='Input directory full of photos')
-def main(input_dir):
+@click.option('--dry-run', is_flag=True, flag_value=True, default=False,
+              help="Don't actualy rename anything")
+def main(input_dir, dry_run):
     src_files_by_renamed = defaultdict(list)
 
     os.chdir(input_dir)
@@ -49,9 +52,9 @@ def main(input_dir):
     for renamed, src_files in src_files_by_renamed.items():
         if len(src_files) == 1:
             src = src_files[0]
-            rename(src, renamed)
+            rename(src, renamed, dry_run=dry_run)
         else:
             for i, src in enumerate(src_files, 1):
                 basename, ext = os.path.splitext(renamed)
                 renamed_with_count = '{}-{}{}'.format(basename, i, ext)
-                rename(src, renamed_with_count)
+                rename(src, renamed_with_count, dry_run=dry_run)
